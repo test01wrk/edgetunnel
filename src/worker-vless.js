@@ -116,14 +116,10 @@ async function vlessOverWSHandler(request) {
 				return;
 			}
 			// if UDP but port not DNS port, close it
-			if (isUDP) {
-				if (portRemote === 53) {
-					isDns = true;
-				} else {
-					// controller.error('UDP proxy only enable for DNS which is port 53');
-					throw new Error('UDP proxy only enable for DNS which is port 53'); // cf seems has bug, controller.error will not end stream
-					return;
-				}
+			isDns = portRemote === 53;
+			if (isUDP && !isDns) {
+				// controller.error('UDP proxy only enable for DNS which is port 53');
+				throw new Error('UDP proxy only enable for DNS which is port 53'); // cf seems has bug, controller.error will not end stream
 			}
 			// ["version", "附加信息长度 N"]
 			const vlessResponseHeader = new Uint8Array([vlessVersion[0], 0]);
